@@ -19,13 +19,12 @@ var _VDICTIONARY = (function() {
   // defines our properties and 'seals' the object from more items being added
   var _initialise = function(that, properties) {
     Object.defineProperties(that, properties);
+    for (var prop in properties) {
+      if (properties[prop].dirty = true) {
+        Object.defineProperty(that, '_' + prop, properties[prop]);
+      }
+    }
     Object.seal(this);
-  }
-
-  // need a function to automatically add the dirty keys we need of a given 
-  // objct
-  var _dirty = function(that, dirties) {
-
   }
 
   return {
@@ -64,7 +63,8 @@ var _VDICTIONARY = (function() {
     Box: function(row) {
       _initialise(this, {
         id: { value: row.id },
-        label: { value: row.label, writable: true },
+        label: { value: row.label, writable: true, dirty: true },
+        name: { value: row.label }, // once they make a name it's permanent
         schema: { value: row.schema }
       });
     },
@@ -77,9 +77,9 @@ var _VDICTIONARY = (function() {
     User: function(row) {
       _initialise(this, {
         id: { value: row.id },
-        first_name: { value: row.first_name, writable: true },
-        last_name: { value: row.last_name, writable: true },
-        email: { value: row.email, writable: true }
+        first_name: { value: row.first_name, writable: true, dirty: true },
+        last_name: { value: row.last_name, writable: true, dirty: true },
+        email: { value: row.email, writable: true, dirty: true }
       });
     },
 
@@ -90,8 +90,8 @@ var _VDICTIONARY = (function() {
     Permission: function(row) {
       _initialise(this, {
         id: { value: row.id },
-        label: { value: row.label, writable: true },
-        permissions: { value: row.permissions, writable: true }
+        label: { value: row.label, writable: true, dirty: true },
+        permissions: { value: row.permissions, writable: true, dirty: true }
       });
       /*
         the 'permissions' field is JSON that stores the CRUD for each type in 
@@ -121,9 +121,9 @@ var _VDICTIONARY = (function() {
     Interface: function(row) {  
       _initialise(this, {
         id: { value: row.id },
-        label: { value: row.label, writable: true },
-        type: { value: row.type, writable: true }, // 'home', 'generic', or 'detail'
-        ui: { value: row.ui, writable: true } // TODO JSON structure
+        label: { value: row.label, writable: true, dirty: true },
+        type: { value: row.type, writable: true, dirty: true }, // 'home', 'generic', or 'detail'
+        ui: { value: row.ui, writable: true, dirty: true } // TODO JSON structure
       });
     },
 
@@ -135,10 +135,10 @@ var _VDICTIONARY = (function() {
     Automation: function(row) {
       _initialise(this, {
         id: { value: row.id },
-        label: { value: row.label, writable: true },
-        trigger: { value: row.trigger, writable: true }, // 'create', 'update', 'delete', 'manual', 'trigger'
-        table: { value: row.table, writable: true }, // 'customer'
-        process: { value: row.process, writable: true } // TODO JSON structure
+        label: { value: row.label, writable: true, dirty: true },
+        trigger: { value: row.trigger, writable: true, dirty: true }, // 'create', 'update', 'delete', 'manual', 'trigger'
+        table: { value: row.table, writable: true, dirty: true }, // 'customer'
+        process: { value: row.process, writable: true, dirty: true } // TODO JSON structure
       });
     },
 
@@ -149,10 +149,10 @@ var _VDICTIONARY = (function() {
     File: function(row) {
       _initialise(this, {
         id: { value: row.id },
-        label: { value: row.label, writable: true },
-        file_type: { value: row.file_type, writable: true }, // .pdf
-        content_type: { value: row.content_type, writable: true }, // application/pdf
-        contents: { value: row.contents, writable: true }, // TODO JSON structure
+        label: { value: row.label, writable: true, dirty: true },
+        file_type: { value: row.file_type, writable: true, dirty: true }, // .pdf
+        content_type: { value: row.content_type, writable: true, dirty: true }, // application/pdf
+        contents: { value: row.contents, writable: true, dirty: true }, // TODO JSON structure
       });
     },
 
@@ -167,36 +167,31 @@ var _VDICTIONARY = (function() {
       Columns within a table are just stored in a JSON field
     */
     Table: function(row) {
-      this.id = row.id;
-      this.label = row.label; // 'Customer'
-      this._label = row.label; // 'Customer'
-      this.plural = row.plural; // 'Customers'
-      this._plural = row.plural; // 'Customers'
-      this.icon = row.icon;
-      this._icon = row.icon;
-      this.name = row.name; // 'customer'
-      this._name = row.name; // 'customer'
-      this.schema = row.schema; // '0a844D5hi1sD3e6r'
-      this.columns = row.columns.map(function(column) {
+      var columns = row.columns.map(function(column) {
         return new _VDICTIONARY.Column(column);
+      });
+      _initialise(this, {
+        id: { value: row.id },
+        label: { value: row.label, writable: true, dirty: true }, // 'Customer'
+        plural: { value: row.plural, writable: true, dirty: true },  // 'Customers'
+        icon: { value: row.icon, writable: true, dirty: true }, // FA icon name, i.e. 'walking'
+        name: { value: row.name, writable: true, dirty: true },  // 'customer'
+        schema: { value: row.schema, writable: true, dirty: true }, // '0a844D5hi1sD3e6r'
+        columns: { value: columns } 
       });
     },
 
     Column: function(row) {
-      this.id = row.id;
-      this.label = row.label; // 'First Name'
-      this._label = row.label; // 'First Name'
-      this.name = row.name; // 'first_name'
-      this._name = row.name; // 'first_name'
-      this.datatype = row.datatype; // 'Text'
-      this._datatype = row.datatype; // 'Text'
-      this.required = row.required; // whether the column is required
-      this._required = row.required; // whether the column is required
-      this.unique = row.unique; // whether the column should be unique
-      this._unique = row.unique; // whether the column should be unique
-      this.default = row.default; // the default value for a column
-      this._default = row.default; // the default value for a column
-      this.system = row.system; // system fields like ID that can't be overwritten
+      _initialise(this, {
+        id: { value: row.id },
+        label: { value: row.label, writable: true, dirty: true }, // 'First Name'
+        name: { value: row.name, writable: true, dirty: true }, // 'first_name'
+        datatype: { value: row.datatype, writable: true, dirty: true },
+        required: { value: row.required, writable: true, dirty: true },// whether the column is required
+        unique: { value: row.unique, writable: true, dirty: true }, // whether the column should be unique
+        default: { value: row.default, writable: true, dirty: true },// the default value for a column
+        system: { value: row.system }  // system fields like ID that can't be overwritten
+      });
     }
 
 
