@@ -1,0 +1,27 @@
+<script type="text/javascript" src="saturn-server/js/dictionary.js"></script>
+
+<script type="text/javascript">
+
+var table1 = {
+  name: 'Customer',
+  columns: [
+    { name: 'id', writable: false },
+    { name: 'first_name', writable: true },
+    { name: 'last_name', writable: true }
+  ]
+};
+
+var row1 = {
+  first_name: 'Elliott',
+  last_name: 'Thurman-Newell'
+}
+
+  var box = new $Dictionary.customDefinition(table1, row1);
+  console.log(box);
+  box.id = 'test';
+  delete box.id;
+  console.log(box);
+
+
+
+</script>
