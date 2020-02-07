@@ -13,12 +13,19 @@
 */
 
 
-var $Dictionary = (function() {
+var _VDICTIONARY = (function() {
   'use strict';
 
+  // defines our properties and 'seals' the object from more items being added
   var _initialise = function(that, properties) {
     Object.defineProperties(that, properties);
     Object.seal(this);
+  }
+
+  // need a function to automatically add the dirty keys we need of a given 
+  // objct
+  var _dirty = function(that, dirties) {
+
   }
 
   return {
@@ -55,7 +62,7 @@ var $Dictionary = (function() {
       ui, automation, designs, and code
     */
     Box: function(row) {
-      _initialise({
+      _initialise(this, {
         id: { value: row.id },
         label: { value: row.label, writable: true },
         schema: { value: row.schema }
@@ -68,7 +75,7 @@ var $Dictionary = (function() {
       GRANT permissions on the partitioned schema tables
     */
     User: function(row) {
-      _initialise({
+      _initialise(this, {
         id: { value: row.id },
         first_name: { value: row.first_name, writable: true },
         last_name: { value: row.last_name, writable: true },
@@ -81,7 +88,7 @@ var $Dictionary = (function() {
       or do within a box 
     */
     Permission: function(row) {
-      _initialise({
+      _initialise(this, {
         id: { value: row.id },
         label: { value: row.label, writable: true },
         permissions: { value: row.permissions, writable: true }
@@ -112,7 +119,7 @@ var $Dictionary = (function() {
       on the page that a full paying customer
     */
     Interface: function(row) {  
-      _initialise({
+      _initialise(this, {
         id: { value: row.id },
         label: { value: row.label, writable: true },
         type: { value: row.type, writable: true }, // 'home', 'generic', or 'detail'
@@ -126,7 +133,7 @@ var $Dictionary = (function() {
       called manually or called by another action
     */
     Automation: function(row) {
-      _initialise({
+      _initialise(this, {
         id: { value: row.id },
         label: { value: row.label, writable: true },
         trigger: { value: row.trigger, writable: true }, // 'create', 'update', 'delete', 'manual', 'trigger'
@@ -140,11 +147,13 @@ var $Dictionary = (function() {
       Design Studio
     */
     File: function(row) {
-      this.id = row.id;
-      this.label = row.label;
-      this.file_type = row.file_type;
-      this.content_type = row.content_type;
-      this.contents = row.contents; // TODO JSON structure
+      _initialise(this, {
+        id: { value: row.id },
+        label: { value: row.label, writable: true },
+        file_type: { value: row.file_type, writable: true }, // .pdf
+        content_type: { value: row.content_type, writable: true }, // application/pdf
+        contents: { value: row.contents, writable: true }, // TODO JSON structure
+      });
     },
 
 
@@ -169,7 +178,7 @@ var $Dictionary = (function() {
       this._name = row.name; // 'customer'
       this.schema = row.schema; // '0a844D5hi1sD3e6r'
       this.columns = row.columns.map(function(column) {
-        return new $Dictionary.Column(column);
+        return new _VDICTIONARY.Column(column);
       });
     },
 
