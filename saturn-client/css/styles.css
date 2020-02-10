@@ -434,4 +434,16 @@ body.v {
 .slide-enter, .slide-leave-to {
   left: -200px;
 }
+
+.v-debug {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  background: #3CAE9C;
+  color: #FFFFFF;
+  font-size: 10px;
+  padding: 10px;
+  border-radius: 4px;
+  z-index: 1000;
+}
 /*# sourceMappingURL=styles.css.map */

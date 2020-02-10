@@ -1,11 +1,18 @@
+// @TODO
+// revisit how we structure admin pages, it would be nice to load them through 
+// the default / page view system as if they were a page like anything else!
+
+// need to wait until we've done more in the default.view + page.view rendering 
+// before we can do that though
+
+
 // database manage allows admins to create and manage their databases
 // probably also want data quality rules in here somewhere
 
-_VGLOBALS.views.databaseManager = Vue.component('v-database-manager', {
+_VGLOBALS.views.databaseManager = Vue.component('v-database-manager-view', {
   template: `
-  <div>
+  <div name="database-manager-view">
   
-  <transition name="fade">
     <div v-show="loaded">
   
     <aside class="v-sidebar" key="a">
@@ -145,7 +152,6 @@ _VGLOBALS.views.databaseManager = Vue.component('v-database-manager', {
     </main>
   
     </div>
-  </transition>
   
   </div>`,
   props: [],

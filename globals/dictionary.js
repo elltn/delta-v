@@ -110,7 +110,7 @@ var _VDICTIONARY = (function() {
     },
 
     /*
-      An interface is a page as defined by the user to show in a tab of a box
+      An page is a page as defined by the user to show in a tab of a box
       By default when a new table gets added to a box we create a 'home' and 
       a 'detail' interface for that table to get them started.
 
@@ -118,11 +118,15 @@ var _VDICTIONARY = (function() {
       row values, i.e. if this customer is only a potential you might have less 
       on the page that a full paying customer
     */
-    Interface: function(row) {  
+    Page: function(row) {  
       _initialise(this, {
         id: { value: row.id },
-        label: { value: row.label, writable: true, dirty: true },
-        type: { value: row.type, writable: true, dirty: true }, // 'home', 'generic', or 'detail'
+        label: { value: row.label, writable: true, dirty: true }, // i.e. 'My Homepage'
+        name: { value: row.name, writable: true, dirty: true }, // i.e. 'custom'
+        type: { value: row.type, writable: true, dirty: true }, // 'home', 'table', 'generic', or 'detail'
+        path: { value: row.path, writable: true, dirty: true }, // relative path from /app/
+        icon: { value: row.icon, writable: true, dirty: true }, // icon for tab
+        default: { value: row.default, writable: true, dirty: true }, // whether this should be the default
         ui: { value: row.ui, writable: true, dirty: true } // TODO JSON structure
       });
     },
@@ -183,7 +187,6 @@ var _VDICTIONARY = (function() {
 
     Column: function(row) {
       _initialise(this, {
-        id: { value: row.id },
         label: { value: row.label, writable: true, dirty: true }, // 'First Name'
         name: { value: row.name, writable: true, dirty: true }, // 'first_name'
         datatype: { value: row.datatype, writable: true, dirty: true },
