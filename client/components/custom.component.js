@@ -1,6 +1,19 @@
-Vue.component('v-custom', {
+/*
+  @component - Custom
+  @desc - This component is used to render any component (meta!) that has been 
+    created either by us internally (i.e. admin tools like the database 
+    manager), or by a user for their own needs
+
+    It ony needs to be passed a name, which is the unique api name for a 
+    component (standard or custom), and it will render it as intended
+
+    The component is iframed but we give it a reference to the root, vue, and 
+    load in the v UI styles
+*/
+
+Vue.component('v-component', {
   template: `
-    <div><iframe v-show="loaded"></iframe></div>
+    <div><iframe class="v-frame" v-show="loaded"></iframe></div>
   `,
   props: ['name'],
 
@@ -41,12 +54,11 @@ Vue.component('v-custom', {
 
       var iframe = this.$el.getElementsByTagName('iframe')[0];
       var frame = iframe.contentDocument || iframe.contentWindow.document;
-      console.log(frame);
 
       // add root reference
       var v = document.createElement('script');
       v.setAttribute('type', 'text/javascript');
-      v.innerHTML = 'const V = parent._VROOT;';
+      v.innerHTML = 'const V = parent._VROOT; var _VDICTIONARY = parent._VDICTIONARY;';
       v.setAttribute('id', 'v');
 
       // load vue by default
@@ -73,7 +85,6 @@ Vue.component('v-custom', {
       frame.body.onload = function() {
         frame.body.appendChild(script);
         _this.loaded = true;
-        console.log('frame loaded!');
       }
     },
 
@@ -84,7 +95,7 @@ Vue.component('v-custom', {
       _VDATABASE.runQuery('components', function(error, components) {
         if (error) return console.error(error);
         
-        _this.$root.components = components;
+        _this.$root.components = components.concat(_VGLOBALS.components);
         _this.setComponent(_this.component);
 
       })
@@ -98,8 +109,6 @@ Vue.component('v-custom', {
     // when a custom component is called make sure we have an 
     // uptodate list of 
     // components to use
-
-    console.log('?', this.component);
 
     this.loadComponents();
 

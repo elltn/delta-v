@@ -218,12 +218,12 @@ body.v {
 .v-input input {
   border: none;
   width: 100%;
-  background: none;
+  background: rgba(0, 0, 0, 0.05);
   font-size: 13px;
   height: 30px;
   border-radius: 4px;
   font-family: "Montserrat", sans-serif;
-  color: #A7B9E0;
+  color: #192746;
   padding: 0 10px;
 }
 
@@ -445,5 +445,14 @@ body.v {
   padding: 10px;
   border-radius: 4px;
   z-index: 1000;
+}
+
+.v-frame {
+  margin: 0px;
+  padding: 0px;
+  border: 0px;
+  width: 100%;
+  height: auto;
+  border: 1px solid red;
 }
 /*# sourceMappingURL=styles.css.map */

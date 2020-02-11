@@ -4,8 +4,8 @@ const _VROUTER = new VueRouter({
   routes: [
     { name: 'admin', path: '/admin', component: _VGLOBALS.views.admin, 
       children: [
-        { path: 'database-manager', component: _VGLOBALS.views.databaseManager },
-        { path: 'database-manager/:table', component: _VGLOBALS.views.databaseManager },
+        { path: 'database-manager', component: _VGLOBALS.views.page },
+        { path: 'database-manager/:table', component: _VGLOBALS.views.page },
         { path: '*', component: _VGLOBALS.views.error },
       ]
     },

@@ -12,5 +12,11 @@ var _VROOT = new Vue({
     components: []
   },
 
-  methods: {}
+  methods: {
+
+    goTo: function(path) {
+      _VROUTER.push(path);
+    }
+
+  }
 });

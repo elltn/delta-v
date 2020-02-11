@@ -31,44 +31,57 @@ const _VDATABASE = (function() {
     ],
     'pages': [
       { id: '1', label: 'Customers', name: '_customers', type: 'table', 
-        ui: `
-          <div name="Page">
-            <main class="v-content">
-              This is a standard table page for customers
-              <br/>
-              This is a custom component being loaded in a frame.
-              The frame has access to the root _VROOT variable, plus Vue and 
-              the main stylesheet<br/><br/>
-              <v-custom name="my_custom_component"></v-custom>
-            </main>
-          </div>
+        ui: /*html*/`
+          <main class="v-content">
+            This is a standard table page for customers
+            <br/>
+            This is a custom component being loaded in a frame.
+            <v-component name="my_custom_component"></v-component>
+            The frame has access to the root _VROOT variable, plus Vue and 
+            the main stylesheet<br/>
+            We can also load in standard components predefined, like an input
+            <v-input placeholder="Edit me!"></v-input>
+          </main>
         `, 
         path: 's/customers', icon: 'walking', default: true },
       { id: '2', label: 'Custom Page', name: 'other', type: 'generic', 
-        ui: `
-          <div name="page">
-            <header class="v-header">Hi</header>
-            <main class="v-content">
-              This is my first page <br/>
-              <v-test></v-test>
-            </main>
-          </div>
+        ui: /*html*/`
+          <header class="v-header">
+            <div class="v-header--title">
+              <div class="v-icon"><i class="fas fa-cogs"></i></div>
+              <h1>Custom Page</h1>
+            </div>
+          </header>
+          <main class="v-content">
+            This is my first page <br/>
+          </main>
         `, 
         path: 'other', icon: 'cogs', default: false },
+        { id: '3', label: 'Database Manager', name: '_database_manager', type: 'system', 
+          ui: /*html*/`
+            <v-component name="_database_manager"></v-component>
+          `, 
+          path: 'database-manager', icon: 'database', default: false },
     ],
     'components': [
       { 
         id: '1', label: 'My Custom Component', name: 'my_custom_component',
-        html: `
+        html: /*html*/`
           <div id="myApp">
-            Hello {{ name }}!
-          </di>
+            Hello {{ name }}!<br/>
+            I'm a mini Vue app! I've clicked {{ count }} times
+            <button v-on:click="addCount()">Add</button>
+          </div>
         `,
-        script: `
+        script: /*javascript*/`
           var x = new Vue({
             el: '#myApp',
             data: {
-              name: 'Elliott'
+              name: 'Elliott',
+              count: 0
+            },
+            methods: {
+              addCount: function() { this.count += 1; }
             }
           });
         `

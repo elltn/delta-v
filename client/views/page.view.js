@@ -14,11 +14,12 @@
 _VGLOBALS.views.page = Vue.component('v-page-view', {
   template: `
   <div name="page-view">
-    <v-proxy :content="content"></v-proxy>
+    <v-proxy :html="html"></v-proxy>
   </div>`,
   data: function() {
     return {
-      content: {}
+      html: '',
+      loaded: false
     }
   },
   computed: {
@@ -52,8 +53,8 @@ _VGLOBALS.views.page = Vue.component('v-page-view', {
     // to render the proxy contents we compile the raw ui string
     // then set the rendered return as the content for the proxy
     setContent: function(page) {
-      var proxy = Vue.compile(page.ui);
-      this.content = proxy.render.call(this, this.$createElement);
+      var _this = this;
+      _this.html = '<div name="page">' + page.ui + '</div>';
     }
 
   },
@@ -69,9 +70,8 @@ _VGLOBALS.views.page = Vue.component('v-page-view', {
 // a given interfaces UI data
 // this means any dynamic stuff gets compiled properly by vue
 Vue.component('v-proxy', {
-	functional: true,
-  props: ['content'],
-  render: function(createElement, context) {
-  	return context.props.content;
+  props: ['html'],
+  render: function(createElement) {
+    return createElement(Vue.compile(this.html));
   }
 })
