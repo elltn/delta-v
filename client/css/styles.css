@@ -182,6 +182,21 @@ body.v {
   width: 100%;
 }
 
+.v-grid {
+  display: -ms-grid;
+  display: grid;
+}
+
+.v-grid--rows {
+  -ms-grid-rows: (minmax(100px, auto))[auto-fit];
+      grid-template-rows: repeat(auto-fit, minmax(100px, auto));
+}
+
+.v-grid--columns {
+  -ms-grid-columns: (minmax(100px, auto))[auto-fit];
+      grid-template-columns: repeat(auto-fit, minmax(100px, auto));
+}
+
 .v-input {
   width: 100%;
 }
@@ -453,6 +468,10 @@ body.v {
   border: 0px;
   width: 100%;
   height: auto;
-  border: 1px solid red;
+  border: none;
+}
+
+.v-pad--none {
+  padding: 0px;
 }
 /*# sourceMappingURL=styles.css.map */

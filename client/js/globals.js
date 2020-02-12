@@ -8,6 +8,110 @@ var _VGLOBALS = {
   },
 
   components: [
+
+    { 
+      id: 'x', 
+      label: 'Developer Console', 
+      name: '_developer_console',
+      height: '100%',
+      html: /*html*/`
+        <div name="developer-console">
+
+          <div id="vdc">
+            <main class="v-content v-pad--none">
+
+              <div class="v-grid v-grid--columns">
+                <div class="v-grid v-grid--rows">
+                  <div class="full">
+                    <textarea id="html"></textarea>
+                  </div>
+                  <div class="full">
+                    <textarea id="js"></textarea>
+                  </div>
+                </div>
+                <div class="v-grid v-grid--rows">
+                  <div class="full">
+                    <v-component v-bind:log="true" embed="50vh" :html="xhtml" :js="xjs" :css="xcss"></v-component>
+                  </div>
+                  <div class="full console">
+                    <div v-for="l in logs" v-bind:key="l.timestamp">
+                      <pre>{{ l.args.join(', ') }}</pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </main>
+          </div>
+
+        </div>
+      `,
+      css: /*css*/`
+        .full { height: 50vh; position: relative } 
+        .full textarea { height: 100%; width: 100% }
+        .console { background: #0D182E; color: #ffffff; }
+        .CodeMirror { position: absolute; left: 0; top: 0; width: 100%; height: 50vh; }
+      `,
+      js: /*javascript*/`
+        var a = new Vue({
+          el: '#vdc',
+          data: {
+            xhtml: '',
+            xjs: '',
+            xcss: '',
+            html: {},
+            js: {},
+            loaded: false,
+            logs: []
+          },
+          mounted: function() {
+
+
+            var _this = this;
+
+            this.html = CodeMirror.fromTextArea(document.getElementById('html'), {
+              lineNumbers: true, 
+              tabSize: 2,
+              mode: 'htmlmixed'
+            });
+            this.html.on('change', function(cm) { _this.xhtml = cm.getValue(); });
+            _this.html.setValue('<div id="vs">\\n\\tHello {{ name }}!\\n\\t<input v-model="name"/>\\n\\t<button v-on:click="printName()">Greet</button>\\n</div>');
+
+            this.js = CodeMirror.fromTextArea(document.getElementById('js'), {
+              lineNumbers: true, 
+              tabSize: 2,
+              mode: 'javascript'
+            });
+            this.js.on('change', function(cm) { _this.xjs = cm.getValue(); });
+
+            _top.addEventListener('vlog', function(log, data) {
+              console.log(log.detail);
+              _this.logs.push(log.detail);
+            })
+
+            Vue.nextTick(function() {
+              // if we don't reset it the preview doesn't load until you make 
+              // and edit to one of the code mirrors!
+              // quirky quirks
+              _this.js.setValue('');
+              Vue.nextTick(function() {
+                _this.js.setValue(
+                  "new Vue({" + 
+                  "\\n\\tel: '#vs'," + 
+                  "\\n\\tdata: {\\n\\t\\tname: 'World'\\n\\t}," + 
+                  "\\n\\tmethods: {\\n\\t\\tprintName: function() {\\n\\t\\t\\tconsole.log('Hello ' + this.name + '!');\\n\\t\\t}\\n\\t}\\n});");
+                _this.loaded = true;
+              })
+            });
+
+            
+
+          }
+        });
+      `
+    },
+
+
     { id: 'x', label: 'Database Manager', name: '_database_manager', 
       html: /*html*/`
       <div name="database-manager-view">

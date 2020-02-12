@@ -15,7 +15,7 @@
 _VGLOBALS.views.default = Vue.component('v-default', {
 
   template: `
-  <div name="default-view">
+  <div name="v-default">
   
     <nav class="v-menu">
       <div class="v-menu--header">

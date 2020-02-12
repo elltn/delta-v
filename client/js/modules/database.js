@@ -2,7 +2,7 @@
  *  @module - _VDATABASE
  *  @desc - Used to act as a fake database when we are developing offline
 */
-const _VDATABASE = (function() {
+var _VDATABASE = (function() {
   'use strict';
 
   var _data = {
@@ -44,7 +44,14 @@ const _VDATABASE = (function() {
           </main>
         `, 
         path: 's/customers', icon: 'walking', default: true },
-      { id: '2', label: 'Custom Page', name: 'other', type: 'generic', 
+      { 
+        id: '2', 
+        label: 'Custom Page', 
+        name: 'other', 
+        type: 'generic', 
+        path: 'other', 
+        icon: 'cogs', 
+        default: false,
         ui: /*html*/`
           <header class="v-header">
             <div class="v-header--title">
@@ -55,13 +62,19 @@ const _VDATABASE = (function() {
           <main class="v-content">
             This is my first page <br/>
           </main>
-        `, 
-        path: 'other', icon: 'cogs', default: false },
-        { id: '3', label: 'Database Manager', name: '_database_manager', type: 'system', 
-          ui: /*html*/`
-            <v-component name="_database_manager"></v-component>
-          `, 
-          path: 'database-manager', icon: 'database', default: false },
+        `  
+      },
+      { 
+        id: '3', 
+        label: 'Developer Console', 
+        name: '_developer_console', 
+        type: 'system', 
+        path: 'developer-console', 
+        icon: 'wrench', 
+        default: false,
+        ui: /*html*/`
+            <v-component name="_developer_console"></v-component>
+          ` },
     ],
     'components': [
       { 
@@ -73,7 +86,7 @@ const _VDATABASE = (function() {
             <button v-on:click="addCount()">Add</button>
           </div>
         `,
-        script: /*javascript*/`
+        js: /*javascript*/`
           var x = new Vue({
             el: '#myApp',
             data: {

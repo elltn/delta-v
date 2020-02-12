@@ -1,3 +1,6 @@
+// don't forget to run the live sass compiler!
+
+
 // color variables
 $space_darker: #0D182E;
 $space_dark: #13203A;
@@ -187,6 +190,18 @@ body.v {
 .v-sidebar--content {
   height: calc(100% - 50px);
   width: 100%;
+}
+
+
+
+.v-grid {
+  display: grid;
+}
+.v-grid--rows {
+  grid-template-rows: repeat(auto-fit, minmax(100px, auto));
+}
+.v-grid--columns {
+  grid-template-columns: repeat(auto-fit, minmax(100px, auto));
 }
 
 
@@ -417,5 +432,12 @@ body.v {
   border: 0px;
   width: 100%;
   height: auto;
-  border: 1px solid red;
+  border: none;
+}
+
+
+
+
+.v-pad--none {
+  padding: 0px;
 }
