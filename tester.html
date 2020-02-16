@@ -1,0 +1,60 @@
+<html>
+  <head>
+    <Style>
+      h1 {
+        font-size: 20px;
+        font-family: 'Helvetica';
+        margin-top: 40px;
+      }
+      .x {
+        padding: 4px 14px;
+        background: #ddd;
+        color: #555;
+        border-radius: 4px;
+        font-size: 20px;
+        font-family: 'Helvetica';
+      }
+      .x.K {
+        background: #000;
+        color: #fff;
+      }
+      .x.T {
+        background: #ccc;
+      }
+      .x.P {
+        background: #777;
+        color: #fff;
+      }
+    </Style>
+  </head>
+  <body>
+    <h1>Cast on 55 sts.</h1>
+    <div id="mount"></div>
+    <h1>Repeat Rows 1-6:  52 more times. Cast off. </h1>
+    <script>
+      var mount = document.getElementById('mount');
+      var data = 'ROW 1 (RS):  P4, K7, P1, K7, P4, K4, YO, SL 1, K1, PSSP, K3, P4, K7, P1, K7, P4. ROW 2:  K1, P2, K1, P5, [K1,P1] TWICE, K1, P5, K1, P2, K1, P9, K1, P2, K1, P5, [K1,P1] TWICE, K1, P5, K1, P2, K1. ROW 3: P4, K4, [P1,K2] TWICE, P1, K4, P4, K2, K2TOG, YO, K1, YO, SL 1, K1, PSSO, K2, P4, K4, [P1,K2] TWICE, P1, K4, P4. ROW 4:  K1, P2, [K1,P3] 4 TIMES, K1, P2, K1, P9, K1, P2, [K1,P3] 4 TIMES, K1, P2, K1. ROW 5:  P4, K2, [P1,K4] TWICE, P1, K2, P4, K1, K2TOG, YO, K3, YO, SL 1, K1, PSSO, K1, P4, K2, [P1,K4] TWICE, P1, K2, P4. ROW 6:  K1, P2, K1, P1, [K1,P5] TWICE, K1, P1, K1, P2, K1, P9, K1, P2, K1, P1, [K1,P5] TWICE, K1, P1, K1, P2, K1.';
+      
+      data.split('.').forEach(function(row) {
+        console.log(row);     
+        var rown = row.split(':')[0];
+        var patt = row.split(':')[1].split(', ');
+        console.log(rown, patt);
+        mount.innerHTML += '<h1>' + rown.trim(); + '</h1>';
+        patt.forEach(function(p) {
+          var type = '';
+          if (p.indexOf('K') != -1) type = 'K';
+          if (p.indexOf('P') != -1) type = 'P';
+          if (p.indexOf('TWICE') != -1) type = 'T';
+          if (p.indexOf('TIMES') != -1) type = 'T';
+          if (p.indexOf('TOG') != -1) type = '';
+          if (p.indexOf('PSSP') != -1) type = '';
+          if (p.indexOf('PSSO') != -1) type = '';
+          mount.innerHTML += '<span class="x ' + type + '">' + p + '</span><span>&nbsp;&nbsp;</span>';
+        })
+      });
+      </script>
+  </body>
+</html>
+
+

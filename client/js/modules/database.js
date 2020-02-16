@@ -86,6 +86,9 @@ var _VDATABASE = (function() {
             <button v-on:click="addCount()">Add</button>
           </div>
         `,
+        css: /*css*/`
+         body.v { background: pink; }
+        `,
         js: /*javascript*/`
           var x = new Vue({
             el: '#myApp',

@@ -52,17 +52,9 @@ Vue.component('v-component', {
       this.setComponent(component);
     },
 
-    html: function(change) {
-      this.setComponent(null);
-    },
-
-    js: function() {
-      this.setComponent(null);
-    },
-
-    css: function() {
-      this.setComponent(null);
-    },
+    html: function() { this.setComponent(null); },
+    js: function() { this.setComponent(null); },
+    css: function() { this.setComponent(null); },
 
   },
   
@@ -84,77 +76,40 @@ Vue.component('v-component', {
       var chtml = component ? component.html : this.html;
       var cstyle = component ? component.css : this.css;
 
-      // add root reference
-      var v = document.createElement('script');
-      v.setAttribute('type', 'text/javascript');
-      v.innerHTML = `
+      var reference = /*javascript*/`
         var _top = window.top;
         var _VROOT = parent._VROOT;
         var _VDICTIONARY = parent._VDICTIONARY;
         var _VDATABASE = parent._VDATABASE;
         var _VGLOBALS = parent._VGLOBALS;
         var CodeMirror = parent.CodeMirror;
+        var _VLOG = function() {
+          var args = [].slice.call(arguments, 0);
+          var ev = { 
+            timestamp: new Date().toISOString(), 
+            args: args
+          };
+          _top.dispatchEvent(new CustomEvent('vlog', { detail: ev }));
+          console.log.call(arguments);
+        }
       `;
-      if (this.log == true) {
-        // add log hook for this component
-        // @TODO add alternate for console.trace() for the stack
-        v.innerHTML += `
-          // forgive me browsers for I have sinned
-          var _original = console.log;
-          console.log = function(trace) {
-            var stack = new Error().stack;
-            stack = stack.indexOf('Error') == 0 ? 
-              'Stacktrace: ' + stack.substr(6, stack.length) : stack;
-            var args = [].slice.call(arguments, 0);
-            if (trace == '_VSTACKTRACE') args.push(stack);
-            _top.dispatchEvent(new CustomEvent('vlog', { detail: { timestamp: new Date().toISOString(), args: args}}));
-            _original.apply(console, args); 
-          }
-        `
-      }
-      v.setAttribute('id', 'v');
 
-      // load vue by default
-      var vu = document.createElement('script');
-      vu.setAttribute('type', 'text/javascript');
-      vu.setAttribute('src', '../globals/libs/vue.js');
+      // load resources that won't change
+      this.appendHeader(frame, null, 'script', null, reference);
+      this.appendHeader(frame, null, 'script', '../globals/libs/vue.js');
+      this.appendHeader(frame, null, 'script', './components/custom.component.js');
+      this.appendHeader(frame, null, 'style', './css/styles.css');
+      this.appendHeader(frame, null, 'style', '../globals/libs/codemirror/codemirror.css');
+      this.appendHeader(frame, null, 'style', '../globals/libs/codemirror/addon/lint/lint.css');
 
-      // load components
-      var c1 = document.createElement('script');
-      c1.setAttribute('type', 'text/javascript');
-      c1.setAttribute('src', './components/custom.component.js');
-
-      // load ui styles
-      var style = document.createElement('link');
-      style.setAttribute('href', './css/styles.css');
-      style.setAttribute('type', 'text/css');
-      style.setAttribute('rel', 'stylesheet');
-      
-      // load css mirror styles
-      var cmstyle = document.createElement('link');
-      cmstyle.setAttribute('href', '../globals/libs/codemirror/codemirror.css');
-      cmstyle.setAttribute('type', 'text/css');
-      cmstyle.setAttribute('rel', 'stylesheet');
-
-      // load component style
-      var ccc = document.createElement('style');
-      ccc.innerHTML = cstyle;
-      ccc.setAttribute('type', 'text/css');
-      ccc.setAttribute('rel', 'stylesheet');
-
-      if (frame.getElementById('v') == null) {
-        frame.head.appendChild(v);
-        frame.head.appendChild(vu);
-        frame.head.appendChild(style);
-        frame.head.appendChild(cmstyle);
-        frame.head.appendChild(c1);
-      }
+      // load resource that will change
+      this.appendHeader(frame, 'x-style', 'style', null, cstyle);
 
       var check = function() {
         if (iframe.contentWindow.Vue != undefined) {
 
             frame.body.className = 'v';
-            frame.body.innerHTML = '<style>' + cstyle + '</style>' + chtml;
+            frame.body.innerHTML = chtml;
           
               var cjs = frame.getElementById('cjs');
               if (cjs != null) frame.body.removeChild(cjs);
@@ -172,6 +127,34 @@ Vue.component('v-component', {
       }
       check();
 
+    },
+
+    appendHeader: function(frame, id, type, src, raw) {
+      var exist = frame.getElementById(id);
+      if (exist == null || id != null) {
+        if (exist != null) frame.head.removeChild(exist);
+        var item = type == 'style' ? this.createStyle(id, src, raw) : this.createScript(id, src, raw);
+        frame.head.appendChild(item);
+      }
+    },
+
+    createStyle: function(id, src, raw) {
+      var style = document.createElement(src ? 'link' : 'style');
+      if (id != null) style.setAttribute('id', id);
+      style.setAttribute('type', 'text/css');
+      if (src) style.setAttribute('href', src);
+      if (src) style.setAttribute('rel', 'stylesheet');
+      if (raw) style.innerHTML = raw;
+      return style;
+    },
+
+    createScript: function(id, src, raw) {
+      var script = document.createElement('script');
+      if (id != null) style.setAttribute('id', id);
+      script.setAttribute('type', 'text/javascript');
+      if (src) script.setAttribute('src', src);
+      if (raw) script.innerHTML = raw;
+      return script;
     },
 
     loadComponents: function() {
