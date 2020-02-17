@@ -4,6 +4,7 @@
   "description": "For workflow we are using VSCode with the following extensions:\r - Live Server (can host the client index.html in browser to dev locally)\r - Live Sass Compiler (to automatically compile SCSS into CSS for the live server)\r - es6-string-html (highlights HTML in template literals)\r - es6-string-javascript (highlights JS in template literals)",
   "main": "server/server.js",
   "scripts": {
+    "start": "node server/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
