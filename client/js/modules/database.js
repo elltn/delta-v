@@ -1,3 +1,11 @@
+
+
+
+
+
+
+
+
 /*
  *  @module - _VDATABASE
  *  @desc - Used to act as a fake database when we are developing offline
@@ -36,7 +44,9 @@ var _VDATABASE = (function() {
             This is a standard table page for customers
             <br/>
             This is a custom component being loaded in a frame.
-            <v-component name="my_custom_component"></v-component>
+            <v-component embed="100px" name="my_custom_component"></v-component>
+            <v-component embed="100px" name="my_custom_component"></v-component>
+            <v-component embed="100px" name="my_custom_component"></v-component>
             The frame has access to the root _VROOT variable, plus Vue and 
             the main stylesheet<br/>
             We can also load in standard components predefined, like an input
@@ -79,6 +89,7 @@ var _VDATABASE = (function() {
     'components': [
       { 
         id: '1', label: 'My Custom Component', name: 'my_custom_component',
+        height: '100px',
         html: /*html*/`
           <div id="myApp">
             Hello {{ name }}!<br/>

@@ -135,6 +135,10 @@ var _VDICTIONARY = (function() {
       An automation is a specific automatic action as defined by a user. This 
       could be an action triggered when a new record is created, updated, 
       called manually or called by another action
+      { id: 1, label: Hi, trigger: ["before-create", "after-update"]}
+
+{ beforeCreate, afterCreate, === BOOLEANS}
+
     */
     Automation: function(row) {
       _initialise(this, {

@@ -40,7 +40,7 @@ var _VGLOBALS = {
                   </div>
                 </div>
                 <div class="v-grid v-grid--rows">
-                  <div class="full">
+                  <div class="full" style="height: 50%;">
                     <v-component v-bind:log="true" embed="50vh" :html="xhtml" :js="xjs" :css="xcss"></v-component>
                   </div>
                   <div class="full console">

@@ -1,0 +1,22 @@
+{
+  "name": "delta-v",
+  "version": "1.0.0",
+  "description": "For workflow we are using VSCode with the following extensions:\r - Live Server (can host the client index.html in browser to dev locally)\r - Live Sass Compiler (to automatically compile SCSS into CSS for the live server)\r - es6-string-html (highlights HTML in template literals)\r - es6-string-javascript (highlights JS in template literals)",
+  "main": "server/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/s-a-t-u-r-n/saturn.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/s-a-t-u-r-n/saturn/issues"
+  },
+  "homepage": "https://github.com/s-a-t-u-r-n/saturn#readme",
+  "dependencies": {
+    "pg": "^7.18.1"
+  }
+}

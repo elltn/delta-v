@@ -1,7 +1,19 @@
 var $Database = (function() {
   'use strict';
 
+  var _pool = require('pg').Pool;
+
+  // connect to db as a pool
+  var _db = new _pool({
+    connectionString: process.env.DATABASE_URL
+  });
+
   return {
+
+    // runs a query on the database and returns a callback of (err, res)
+    runQuery: function(query, callback) {
+      _db.query(query, callback);
+    },
 
     /*
       When we create an account for the first time we need to create some 
@@ -34,9 +46,9 @@ var $Database = (function() {
       SATURN.LIVE_components
 
       // custom tables
-      SATURN.LIVE_customers
-      SATURN.LIVE_orders
-      SATURN.LIVE_products
+      SATURN.LIVE__customers
+      SATURN.LIVE__orders
+      SATURN.LIVE__products
 
     */
     setupDefaults: function() {
@@ -47,3 +59,5 @@ var $Database = (function() {
   }
 
 }());
+
+module.exports = $Database;
