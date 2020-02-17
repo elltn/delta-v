@@ -14,19 +14,57 @@ var _VGLOBALS = {
       label: 'Developer Console', 
       name: '_developer_console',
       height: '100%',
-      html: /*html*/`
+      html: btoa(/*html*/`
         <div name="developer-console">
 
           <div id="vdc">
-            <main class="v-content v-pad--none">
+
+          <div class="v-button save">
+            <button v-on:click="updateFile()">Save</button>
+          </div>
+
+          <aside class="v-sidebar" key="a">
+
+          <div class="v-sidebar--header">
+            <div class="v-input">
+              <input v-model="search" placeholder="Search tables.."/>
+            </div>
+          </div>
+
+          <div class="v-sidebar--content">
+            <div class="v-list">
+              <h1>Pages</h1>
+              <ul>
+                <template v-for="p in pages">
+                  <li v-bind:class="{'v-selected': file && file.name == p.name}" v-on:click="loadFile(p, 'page')" class="v-list--item">
+                    <i class="fas" v-bind:class="'fa-' + p.icon"></i><span>{{ p.label }}</span>
+                  </li>
+                </template>
+              </ul>
+            </div>
+            <div class="v-list">
+              <h1>Components</h1>
+              <ul>
+                <template v-for="c in components">
+                  <li v-bind:class="{'v-selected': file && file.name == c.name}" v-on:click="loadFile(c, 'component')" class="v-list--item">
+                    <i class="fas" v-bind:class="'fa-' + c.icon"></i><span>{{ c.label }}</span>
+                  </li>
+                </template>
+              </ul>
+            </div>
+
+          </div>
+        </aside>
+
+            <main v-show="file" class="v-content v-pad--none">
 
               <div class="v-grid v-grid--columns">
                 <div class="v-grid v-grid--rows">
                   <div class="full" style="background: #192746;">
                     <ul class="tabs">
                       <li v-on:click="tab = 'html'" v-bind:class="{'selected': tab == 'html'}">HMTL</li>
-                      <li v-on:click="tab = 'js'" v-bind:class="{'selected': tab == 'js'}">JAVASCRIPT</li>
-                      <li v-on:click="tab = 'css'" v-bind:class="{'selected': tab == 'css'}">CSS</li>
+                      <li v-show="type == 'component'" v-on:click="tab = 'js'" v-bind:class="{'selected': tab == 'js'}">JAVASCRIPT</li>
+                      <li v-show="type == 'component'" v-on:click="tab = 'css'" v-bind:class="{'selected': tab == 'css'}">CSS</li>
                     </ul>
                     <div class="tab" v-bind:class="{'show': tab == 'html'}">
                       <textarea id="html"></textarea>
@@ -40,7 +78,7 @@ var _VGLOBALS = {
                   </div>
                 </div>
                 <div class="v-grid v-grid--rows">
-                  <div class="full" style="height: 50%;">
+                  <div class="full">
                     <v-component v-bind:log="true" embed="50vh" :html="xhtml" :js="xjs" :css="xcss"></v-component>
                   </div>
                   <div class="full console">
@@ -55,8 +93,9 @@ var _VGLOBALS = {
           </div>
 
         </div>
-      `,
-      css: /*css*/`
+      `),
+      style: btoa(/*css*/`
+        .save { position: fixed; z-index: 1000; bottom: 20px; left: 20px; width: 180px }
         .full { height: 100vh; position: relative; } 
         .tab { position: absolute; top: 70px; bottom: 0; left: 0; right: 0; background: #192746; z-index: 1; }
         .tab.show { z-index: 10; }
@@ -64,11 +103,9 @@ var _VGLOBALS = {
         .tabs li { float: left; list-style: none; padding: 0 20px; color: #6D7C9D; font-weight: 600; line-height: 50px; text-align: center; cursor: pointer }
         .tabs li.selected { background: #192746}
         .full textarea { height: 100%; width: 100% }
-        .console { background: #0D182E; color: #ffffff; padding: 10px; }
-        .console pre span { opacity: 0.5; }
         .CodeMirror { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
-      `,
-      js: /*javascript*/`
+      `),
+      controller: btoa(/*javascript*/`
         _top._DeveloperConsole = new Vue({
           el: '#vdc',
           data: {
@@ -80,7 +117,12 @@ var _VGLOBALS = {
             css: {},
             loaded: false,
             logs: [],
-            tab: 'html'
+            tab: 'html',
+            search: '',
+            pages: [],
+            components: [],
+            file: null,
+            type: ''
           },
 
           computed: {
@@ -96,14 +138,14 @@ var _VGLOBALS = {
                   }
                 })
               }
-              return []
+              return [];
             }
 
           },
 
           methods: {
 
-            startMirror: function(id, mode, def) {
+            startMirror: function(id, mode) {
               var _this = this;
               this[id] = CodeMirror.fromTextArea(document.getElementById(id), {
                 lineNumbers: true, 
@@ -113,8 +155,47 @@ var _VGLOBALS = {
                 lint: true
               });
               this[id].on('change', function(cm) { _this['x' + id] = cm.getValue(); });
+            },
+
+            setMirror: function(id, def) {
               this[id].setValue(def);
-            }
+              this[id].refresh();
+            },
+
+            loadFile: function(file, type) {
+              var _this = this;
+              this.file = file;
+              this.type = type;
+              this.tab = 'html';
+              console.log(file.html);
+              Vue.nextTick(function() {
+                _this.setMirror('html', file.html);
+                _this.setMirror('js', file.controller || '');
+                _this.setMirror('css', file.style || '');
+              })
+            },
+
+            updateFile: function() {
+              if (this.type == 'component') {
+                _VDATABASE.updateComponent({
+                  html: this.xhtml,
+                  style: this.xcss,
+                  controller: this.xjs,
+                  properties: '{}',
+                  name: this.file.name
+                }, function(error, data) {
+                  console.log(error, data);
+                });
+              } 
+              if (this.type == 'page') {
+                _VDATABASE.updatePage({
+                  html: this.xhtml,
+                  name: this.file.name
+                }, function(error, data) {
+                  console.log(error, data);
+                });
+              }
+            },
 
           },
 
@@ -123,13 +204,26 @@ var _VGLOBALS = {
 
             var _this = this;
 
-            var defaultHTML = '<div id="vs">\\n\\tHello {{ name }}!\\n\\t<input v-model="name"/>\\n\\t<button v-on:click="printName()">Greet</button>\\n</div>';
-            var defaultJS = "new Vue({\\n\\tel: '#vs',\\n\\tdata: {\\n\\t\\tname: 'World'\\n\\t},\\n\\tmethods: {\\n\\t\\tprintName: function() {\\n\\t\\t\\t_VLOG('Hello ' + this.name + '!');\\n\\t\\t}\\n\\t}\\n});";
-            var defaultCSS = '#vs {\\n\\tpadding: 20px;\\n}';
+            _VDATABASE.getPages(function(error, data) {
+              _this.pages = data.map(function(p) {
+                p.html = $Decoder.decode(p.html);
+                return p;
+              });
+            })
 
-            this.startMirror('html', 'htmlmixed', defaultHTML);
-            this.startMirror('js', 'javascript', defaultJS);
-            this.startMirror('css', 'css', defaultCSS);
+            _VDATABASE.getComponents(function(error, data) {
+
+              _this.components = data.map(function(c) {
+                c.html = $Decoder.decode(c.html);
+                c.style = $Decoder.decode(c.style);
+                c.controller = $Decoder.decode(c.controller);
+                return c;
+              });
+            })
+
+            this.startMirror('html', 'htmlmixed');
+            this.startMirror('js', 'javascript');
+            this.startMirror('css', 'css');
 
             _top.addEventListener('vlog', function(log, data) {
               console.log(log.detail);
@@ -137,21 +231,14 @@ var _VGLOBALS = {
             })
 
             Vue.nextTick(function() {
-              // if we don't reset it the preview doesn't load until you make 
-              // and edit to one of the code mirrors!
-              // quirky quirks
-              _this.js.setValue('');
-              Vue.nextTick(function() {
-                _this.js.setValue(defaultJS);
-                _this.loaded = true;
-              })
+              _this.loaded = true;
             });
 
             
 
           }
         });
-      `
+      `)
     },
 
 
@@ -295,7 +382,7 @@ var _VGLOBALS = {
 
       </div>
       `, 
-      script: /*javascript*/`
+      controller: /*javascript*/`
       new Vue({
         el: '#vdm',
   data: function() {

@@ -72,9 +72,9 @@ Vue.component('v-component', {
       var iframe = this.$el.getElementsByTagName('iframe')[0];
       var frame = iframe.contentDocument || iframe.contentWindow.document;
 
-      var cscript = component ? component.js : this.js;
+      var cscript = component ? component.controller : this.js;
       var chtml = component ? component.html : this.html;
-      var cstyle = component ? component.css : this.css;
+      var cstyle = component ? component.style : this.css;
 
       var reference = /*javascript*/`
         var _top = window.top;
@@ -98,9 +98,11 @@ Vue.component('v-component', {
       this.appendHeader(frame, null, 'script', null, reference);
       this.appendHeader(frame, null, 'script', '../globals/libs/vue.js');
       this.appendHeader(frame, null, 'script', './components/custom.component.js');
+      this.appendHeader(frame, null, 'script', './js/modules/decoder.js');
       this.appendHeader(frame, null, 'style', './css/styles.css');
+      this.appendHeader(frame, null, 'style', './css/fontawesome.min.css');
       this.appendHeader(frame, null, 'style', '../globals/libs/codemirror/codemirror.css');
-      this.appendHeader(frame, null, 'style', '../globals/libs/codemirror/addon/lint/lint.css');
+      //this.appendHeader(frame, null, 'style', '../globals/libs/codemirror/addon/lint/lint.css');
 
       // load resource that will change
       this.appendHeader(frame, 'x-style', 'style', null, cstyle);
@@ -157,14 +159,33 @@ Vue.component('v-component', {
       return script;
     },
 
+
+    htmlDecode: function(html) {
+      var el = document.createElement('textarea');
+      el.innerHTML = html;
+      return el.value;
+    }, 
+
     loadComponents: function() {
 
       var _this = this;
 
-      _VDATABASE.runQuery('components', function(error, components) {
+      _VDATABASE.getComponent(this.name, function(error, components) {
         if (error) return console.error(error);
+
+        console.log(components);
         
-        _this.$root.components = components.concat(_VGLOBALS.components);
+        components = components.map(function(c) {
+          c.html = $Decoder.decode(c.html);
+          c.style = $Decoder.decode(c.style);
+          c.controller = $Decoder.decode(c.controller);
+          c.properties = $Decoder.decode(c.properties);
+          return c;
+        });
+
+        console.log(components);
+        
+        _this.$root.components = components;
 
       })
 

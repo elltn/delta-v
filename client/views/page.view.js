@@ -54,7 +54,7 @@ _VGLOBALS.views.page = Vue.component('v-page-view', {
     // then set the rendered return as the content for the proxy
     setContent: function(page) {
       var _this = this;
-      _this.html = '<div name="v-proxy">' + page.ui + '</div>';
+      _this.html = '<div name="v-proxy">' + page.html + '</div>';
     }
 
   },

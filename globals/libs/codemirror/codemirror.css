@@ -27,7 +27,7 @@
 
 .CodeMirror-gutters {
   border-right: 0px solid #28385A;
-  background-color: #192746;
+  background-color: #28385A;
   white-space: nowrap;
 }
 .CodeMirror-linenumbers {}
@@ -136,7 +136,7 @@
 .cm-s-default .cm-builtin {color: #3277b3;} /* CSS Ids */
 .cm-s-default .cm-bracket {color: #997;}
 .cm-s-default .cm-tag {color: #3277b3; } /* html tag */
-.cm-s-default .cm-attribute {color: #A7B9E0; } /* html attribute */
+.cm-s-default .cm-attribute {color: #6D7C9D; } /* html attribute */
 .cm-s-default .cm-hr {color: #999;}
 .cm-s-default .cm-link {color: #00c;}
 
@@ -150,7 +150,7 @@
 div.CodeMirror span.CodeMirror-matchingbracket {color: #0b0;}
 div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #a22;}
 .CodeMirror-matchingtag { background: rgba(255, 150, 0, .3); }
-.CodeMirror-activeline-background {background: #13203A; }
+.CodeMirror-activeline-background {background: #192746; }
 
 /* STOP */
 
@@ -160,7 +160,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #a22;}
 .CodeMirror {
   position: relative;
   overflow: hidden;
-  background: #192746;
+  background: #28385A;
 }
 
 .CodeMirror-scroll {
@@ -322,11 +322,11 @@ div.CodeMirror-dragcursors {
   visibility: visible;
 }
 
-.CodeMirror-selected { background: #13203A }
-.CodeMirror-focused .CodeMirror-selected { background: #13203A }
+.CodeMirror-selected { background: #192746 }
+.CodeMirror-focused .CodeMirror-selected { background: #192746 }
 .CodeMirror-crosshair { cursor: crosshair; }
-.CodeMirror-line::selection, .CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection { background: #13203A }
-.CodeMirror-line::-moz-selection, .CodeMirror-line > span::-moz-selection, .CodeMirror-line > span > span::-moz-selection { background: #13203A }
+.CodeMirror-line::selection, .CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection { background: #192746}
+.CodeMirror-line::-moz-selection, .CodeMirror-line > span::-moz-selection, .CodeMirror-line > span > span::-moz-selection { background: #192746 }
 
 .cm-searching {
   background-color: #ffa;

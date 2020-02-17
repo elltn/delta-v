@@ -89,6 +89,14 @@ _VGLOBALS.views.default = Vue.component('v-default', {
       }
     },
 
+
+    htmlDecode: function(html) {
+      var el = document.createElement('textarea');
+      el.innerHTML = html;
+      return el.value;
+    },  
+
+
     /*
       @method - loadPages()
       @desc - Loads all the current pages for the user from the database,
@@ -98,10 +106,15 @@ _VGLOBALS.views.default = Vue.component('v-default', {
     */
     loadPages: function() {
       var _this = this;
-      _VDATABASE.runQuery('pages', function(error, pages) {
+
+      _VDATABASE.getPages(function(error, pages) {
         if (error) return console.error(error);
         // add the interfaces to the root component so all components can access it
-        _this.$root.pages = pages;
+        _this.$root.pages = pages.map(function(p) {
+          console.log(p);
+          p.html = $Decoder.decode(p.html);
+          return p;
+        });
         // add the new routes to the router
         _this.addRoutes(pages);
       });

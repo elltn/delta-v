@@ -145,12 +145,14 @@ body.v {
   color: #6D7C9D;
 }
 
+.v-list--item.v-selected,
 .router-link-exact-active .v-list--item {
   background: #3CAE9C;
   color: #FFFFFF;
   text-decoration: none;
 }
 
+.v-list--item.v-selected i,
 .router-link-exact-active .v-list--item i {
   color: #FFFFFF;
   text-decoration: none;
