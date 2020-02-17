@@ -15,7 +15,7 @@ var $Database = (function() {
     runQuery: function(query, callback) {
       _db.query(query, function(err, res) {
         console.log(err);
-        return callback(err, res);
+        return callback(err, res ? res.rows : null);
       });
     },
 

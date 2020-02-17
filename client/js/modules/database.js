@@ -121,10 +121,10 @@ var _VDATABASE = (function() {
 
     runQuery: function(query, callback) {
       
-      //var url = 'https://deltav.herokuapp.com/api/database/query';
-      var url = 'http://127.0.0.1:3000/api/database/query';
+      var url = 'https://deltav.herokuapp.com/api/database/query';
+      //var url = 'http://127.0.0.1:3000/api/database/query';
       var body = {
-        query: 'SELECT id FROM saturn_LIVE_components'
+        query: 'SELECT id FROM dv_components'
       }
       var request = new XMLHttpRequest();
       request.onreadystatechange = function() {
