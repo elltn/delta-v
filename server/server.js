@@ -48,27 +48,26 @@ const server = http.createServer((req, res) => {
         res: res
       };
 
+      console.log(body);
+
       try {
         var query = JSON.parse(body).query;
         console.log(query);
-        db.runQuery(query, function(err, res) {
-          if (err != null) {
-            res.statusCode = 400;
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({data: null, error: err}));
+        db.runQuery(query, function(error, data) {
+          if (error != null) {
+            res.writeHead(400, {'Content-Type': 'application/json'});
+            res.end(JSON.stringify({data: null, error: error}));
           } else {
-            res.statusCode = 200;
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({data: res, error: null}));
+            res.writeHead(200, {'Content-Type': 'application/json'});
+            res.end(JSON.stringify({data: data, error: null}));
           }
         })
 
 
 
       } catch(e) {
-        res.statusCode = 400;
-        res.setHeader('Content-Type', 'text/plain');
-        res.end('Invalid or empty JSON body');
+        res.writeHead(400, {'Content-Type': 'application/json'});
+        res.end(JSON.stringify({data: null, error: 'Invalid or Empty JSON Body'}));
       }
 
 

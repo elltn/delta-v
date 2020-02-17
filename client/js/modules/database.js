@@ -120,7 +120,28 @@ var _VDATABASE = (function() {
 
 
     runQuery: function(query, callback) {
-      callback(null, _data[query]);
+      
+      //var url = 'https://deltav.herokuapp.com/api/database/query';
+      var url = 'http://127.0.0.1:3000/api/database/query';
+      var body = {
+        query: 'SELECT * FROM Test'
+      }
+      var request = new XMLHttpRequest();
+      request.onreadystatechange = function() {
+        if (request.readyState == 4) {
+          console.log(request.response);
+          if (request.status == 200) {
+            callback(null, request.response);
+          } else {
+            callback(request.response, null);
+          }
+        }
+      }
+
+      request.open('POST', url, true);
+      request.send(JSON.stringify(body));
+
+
     }
 
 
