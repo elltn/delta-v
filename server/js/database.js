@@ -5,14 +5,18 @@ var $Database = (function() {
 
   // connect to db as a pool
   var _db = new _pool({
-    connectionString: process.env.DATABASE_URL
+    connectionString: process.env.DATABASE_URL,
+    ssl: true
   });
 
   return {
 
     // runs a query on the database and returns a callback of (err, res)
     runQuery: function(query, callback) {
-      _db.query(query, callback);
+      _db.query(query, function(err, res) {
+        console.log(err);
+        return callback(err, res);
+      });
     },
 
     /*
